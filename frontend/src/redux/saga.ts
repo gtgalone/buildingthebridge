@@ -9,8 +9,8 @@ import * as actions from './actions'
 import { decode } from '../shared/helper/auth-helper'
 
 // each entity defines 3 creators { request, success, failure }
-const { parcels, LOGIN, SIGNUP, UNCONFIRMATION, PASSWORD,
-  RESET_PASSWORD, FEEDBACK, setLoading, selectedParcel } = actions
+const { LOGIN, SIGNUP, UNCONFIRMATION, PASSWORD,
+  RESET_PASSWORD, FEEDBACK } = actions
 const WINDOW_USER_SCRIPT_VARIABLE = `__USER__`
 /***************************** Subroutines ************************************/
 
@@ -19,28 +19,17 @@ const WINDOW_USER_SCRIPT_VARIABLE = `__USER__`
 // apiFn  : api.fetchUser | api.fetchRepo | ...
 // id     : login | id
 // url    : next page url. If not provided will use pass id to apiFn
-function* fetchEntity(entity: actions.Entity, apiFn: (...args: any[]) => any, id: string, token: string, url: string) {
-  yield put( entity.request(id, token) )
-  yield put( setLoading(true) )
+// function* fetchEntity(entity: actions.Entity, apiFn: (...args: any[]) => any, id: string, token: string, url: string) {
+//   yield put( entity.request(id, token) )
 
-  const {response, error} = yield call(apiFn, url || id, token)
+//   const {response, error} = yield call(apiFn, url || id, token)
 
-  if (response) {
-    yield put( entity.success(id, response) )
-    yield put( setLoading(false) )
-  } else {
-    yield put( entity.failure(id, error) )
-    yield put( setLoading(false) )
-  }
-}
-
-// yeah! we can also bind Generators
-export const fetchParcel = fetchEntity.bind(null, parcels, api.fetchParcel)
-
-// load user unless it is cached
-function* loadParcel(endpoint: string, token: string) {
-  yield call(fetchParcel, endpoint, token)
-}
+//   if (response) {
+//     yield put( entity.success(id, response) )
+//   } else {
+//     yield put( entity.failure(id, error) )
+//   }
+// }
 
 function* submitLogin(payload: any) {
   try {
@@ -53,7 +42,6 @@ function* submitLogin(payload: any) {
 
     // so if apiClient promise resolved, then we can notify our form about successful response
     if (response.status == 403) {
-      yield put(actions.setAuthModalType('unconfirmation'))
       return
     } else if (response.status == 422) {
       throw response
@@ -67,8 +55,6 @@ function* submitLogin(payload: any) {
         window.gtag('set', { user_id: user.email })
       }
 
-      yield put(actions.setUser(user))
-      yield put(actions.setAuthModal(false))
 
       toast(`${user.email}님 환영합니다`)
     }
@@ -94,7 +80,6 @@ function* submitSignup(payload: any) {
 
     // so if apiClient promise resolved, then we can notify our form about successful response
     yield put(SIGNUP.success())
-    yield put(actions.setAuthModal(false))
 
     toast(`${payload.email}(으)로 인증메일을 보냈습니다. 이메일에 있는 링크를 클릭해주세요!`)
 
@@ -120,7 +105,6 @@ function* submitUnconfirmation(payload: any) {
 
     // so if apiClient promise resolved, then we can notify our form about successful response
     yield put(UNCONFIRMATION.success())
-    yield put(actions.setAuthModal(false))
 
     toast(`${payload.email}(으)로 인증메일을 보냈습니다. 이메일에 있는 링크를 클릭해주세요!`)
 
@@ -146,7 +130,6 @@ function* submitPassword(payload: any) {
 
     // so if apiClient promise resolved, then we can notify our form about successful response
     yield put(PASSWORD.success())
-    yield put(actions.setAuthModal(false))
 
     toast(`${payload.email}(으)로 인증메일을 보냈습니다. 이메일에 있는 링크를 클릭해주세요!`)
 
@@ -212,28 +195,9 @@ function* submitFeedback(payload: any) {
   }
 }
 
-function* setSelectedParcel(id: string) {
-  const {response, error} = yield call(api.fetchSelectedParcel, id)
-
-  if (response) {
-    yield put( selectedParcel.success(id, response) )
-    yield put( actions.setSelectedParcel(response) )
-  } else {
-    yield put( selectedParcel.failure(id, error) )
-    yield put( actions.setSelectedParcel(null) )
-  }
-}
-
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
-
-function* watchLoadParcelPage() {
-  while(true) {
-    const { endpoint, token, requiredFields = [] } = yield take(actions.LOAD_PARCEL_PAGE)
-    yield fork(loadParcel, endpoint, token, requiredFields)
-  }
-}
 
 function* watchSubmitLogin() {
   while(true) {
@@ -283,21 +247,11 @@ function* watchSubmitFeedback() {
   }
 }
 
-function* watchSetSelectedParcel() {
-  while(true) {
-    const { id } = yield take(actions.LOAD_SELECTED_PARCEL)
-
-    yield fork(setSelectedParcel, id)
-  }
-}
-
 export default function* root() {
   yield all([
-    fork(watchLoadParcelPage),
     fork(watchSubmitLogin),
     fork(watchSubmitSignup),
     fork(watchSubmitFeedback),
-    fork(watchSetSelectedParcel),
     fork(formActionSaga),
     fork(watchSubmitUnconfirmation),
     fork(watchSubmitPassword),

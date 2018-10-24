@@ -4,15 +4,12 @@ import Router from 'next/router'
 import Head from 'next/head'
 import getConfig from 'next/config'
 import { Provider } from 'react-redux'
-import moment from 'moment'
-import isBefore from 'date-fns/is_before'
-import { ToastContainer } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
+import throttle from 'lodash/throttle'
 
 import Layout from 'src/components/layout'
 import { mobileRegexp } from 'src/constants/const'
 import { withReduxSaga } from 'src/redux/store'
-import { setCurrentParcel, setRouteChange, setIsWindows, setUser, setTheme } from 'src/redux/actions'
-import { getServerSideToken, getClientSideToken } from 'src/shared/helper/auth-helper'
 import { pageview } from 'src/shared/helper/gtag'
 import { ThemeState } from 'src/@types/types'
 
@@ -25,7 +22,6 @@ interface Props {
 
 class MyApp extends App<Props> {
   static async getInitialProps({Component, ctx}) {
-    const isServer = ctx.isServer
     const userAgent = ctx.req ? ctx.req.headers['user-agent'] : navigator.userAgent
     const isMobile = mobileRegexp.test(userAgent)
     const isWindows = userAgent.includes('Windows')
@@ -37,41 +33,24 @@ class MyApp extends App<Props> {
       pageProps = await Component.getInitialProps(ctx)
     }
 
-    const info: any = isServer ? getServerSideToken(ctx.req) : getClientSideToken()
-
-    if (!ctx.store.getState().user) {
-      ctx.store.dispatch(setUser(info.user || null))
-    } else if (!info.user || isBefore(moment.unix(info.user.exp).format(), new Date())) {
-      ctx.store.dispatch(setUser(null))
-    }
-
-    if (ctx.store.getState().isWindows == null) ctx.store.dispatch(setIsWindows(isWindows))
-    let theme = getConfig().publicRuntimeConfig.THEME
-    if (isServer) {
-      ctx.store.dispatch(setTheme(theme))
-    }
-    return { pageProps, isMobile, pathname, isWindows, theme, info, asPath }
+    return { pageProps, isMobile, pathname, isWindows, asPath }
   }
 
   public componentDidMount() {
-    const { pageProps, store, pathname } = (this as any).props
-    const currentParcel = pageProps.id ? pageProps.id : (pageProps.results ? `${pageProps.results.parcel_info.longitude} ${pageProps.results.parcel_info.latitude}` : null)
-    if (pathname != '/owners') store.dispatch(setCurrentParcel(currentParcel))
-  }
-
-  public componentDidUpdate() {
-    const { pageProps, store, pathname } = (this as any).props
-    const currentParcel = pageProps.id ? pageProps.id : (pageProps.results ? `${pageProps.results.parcel_info.longitude} ${pageProps.results.parcel_info.latitude}` : null)
-    if (pathname != '/owners') store.dispatch(setCurrentParcel(currentParcel))
+    window.addEventListener(
+      'scroll',
+      throttle(() => window.scrollEvent.publish(), 99),
+      {
+        passive: true,
+        capture: true
+      }
+    )
   }
 
   public render() {
     const { Component, pageProps, store, isMobile, theme, asPath } = (this as any).props
     Router.onRouteChangeStart = (url) => {
-      store.dispatch(setRouteChange())
       pageview(url, getConfig().publicRuntimeConfig.GA_TRACKING_ID)
-
-      setTimeout(() => store.dispatch(setRouteChange()), 100)
     }
 
     return (
@@ -80,13 +59,12 @@ class MyApp extends App<Props> {
           <title>Building the Bridge</title>
         </Head>
         <ToastContainer
-          position="top-center"
+          position={toast.POSITION.TOP_CENTER}
           autoClose={10000}
           hideProgressBar
           newestOnTop={false}
           closeOnClick={false}
           rtl={false}
-          pauseOnVisibilityChange
           draggable
           pauseOnHover
         />
@@ -99,8 +77,23 @@ class MyApp extends App<Props> {
           </Layout>
           }
         </Provider>
-        <style jsx global>{`{
-        }`}</style>
+        <style jsx global>{`
+          .bg-primary {
+            background-color: #7195BA;
+          }
+          .bg-secondary {
+            background-color: #FFDD56;
+          }
+          .text-primary {
+            color: #7195BA;
+          }
+          .text-secondary {
+            color: #FFDD56;
+          }
+          .text-content {
+            color: #1B3443;
+          }
+        `}</style>
       </Container>
     )
   }
