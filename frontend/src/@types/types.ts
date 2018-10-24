@@ -94,6 +94,7 @@ export interface RootState {
   authModalType: string
   mapType: string
   feedbackModal: boolean
+  scrollY: number
 }
 
 export interface GeometryState {

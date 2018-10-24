@@ -2,49 +2,59 @@ import React from 'react'
 import { withRouter } from 'next/router'
 import { connect } from 'react-redux'
 
-import { setAuthModal, setAuthModalType, setFeedbackModal } from 'src/redux/actions'
-import { RootState, ThemeState } from '../@types/types'
+import { RootState } from '../@types/types'
 import Nav from './nav'
+import { setScrollY } from 'src/redux/actions'
 
 interface Props {
-  isMobile: boolean
   children?: React.ReactNode
-  router?: any
-  user: any
-  authModal: boolean
-  feedbackModal: boolean
-  setAuthModal: any
-  setFeedbackModal: any
-  isWindows: boolean
-  authModalType: string
-  setAuthModalType: any
-  theme: ThemeState
-  isServer: boolean
+  isMobile: boolean
+  scrollY: number
+  dispatchSetScrollY: (data: number) => any
 }
 
 interface State {
   mobileHeight: string
-  isOpenWelcome: boolean
 }
 
 class Layout extends React.Component<Props, State> {
+  private ticking: boolean
+  private eventKeyScroll: number
+
   public constructor(props) {
     super(props)
     this.state = {
-      mobileHeight: 'calc(100vh - 44px)',
-      isOpenWelcome: false
+      mobileHeight: 'calc(100vh - 44px)'
     }
   }
 
-  public shouldComponentUpdate(nextState) {
-    return nextState != this.state
+  public componentDidMount() {
+    const { dispatchSetScrollY } = this.props
+    this.eventKeyScroll = window.scrollEvent.subscribe(this.eventKeyScroll, this.handleScroll)
+    dispatchSetScrollY(window.scrollY)
+  }
+
+  public componentWillUnmount() {
+    window.scrollEvent.unsubscribe(this.eventKeyScroll)
+  }
+
+  public handleScroll = () => {
+    const { dispatchSetScrollY } = this.props
+    if (!this.ticking) {
+      window.requestAnimationFrame(() => {
+        dispatchSetScrollY(window.scrollY)
+        this.ticking = false
+      })
+
+      this.ticking = true
+    }
   }
 
   public render() {
-    const { children } = this.props
+    const { children, isMobile, scrollY } = this.props
     return (
       <React.Fragment>
-        <Nav />
+        <Nav isMobile={isMobile} scrollY={scrollY} />
         <div className="d-flex">
           {children}
         </div>
@@ -54,18 +64,11 @@ class Layout extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-  user: state.user,
-  authModal: state.authModal,
-  feedbackModal: state.feedbackModal,
-  isWindows: state.isWindows,
-  authModalType: state.authModalType,
-  theme: state.theme
+  scrollY: state.scrollY
 })
 
 const mapDispatchToProps = dispatch => ({
-  setAuthModal: (data) => dispatch(setAuthModal(data)),
-  setAuthModalType: (data) => dispatch(setAuthModalType(data)),
-  setFeedbackModal: (data) => dispatch(setFeedbackModal(data))
+  dispatchSetScrollY: (data) => dispatch(setScrollY(data))
 })
 
 export default withRouter<any>(connect(mapStateToProps, mapDispatchToProps)(Layout))

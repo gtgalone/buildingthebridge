@@ -9,6 +9,8 @@ interface Window {
   ActiveXObject: any
   gtag: any
   email: string
+  scrollEvent: any
+  abcd: number
 }
 declare module '*.png' {
   const resource: string
