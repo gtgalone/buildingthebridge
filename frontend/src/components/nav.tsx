@@ -41,11 +41,11 @@ class Nav extends React.Component<Props, State> {
     return (
       <nav className={classNames('flex items-center justify-between absolute w-100 pa3 fixed bg-animate', { 'bg-primary shadow-3': scrollY != 0 })}>
         <Link href="/">
-          <a className="logo link flex flex-column items-start flex-grow-1">
+          <a className="logo link flex flex-column items-start">
             <span className="f6 helvetica white-50 ba b--white-50 pa1">Building the Bridge</span>
           </a>
         </Link>
-        <ul className="list pl0 dn dn-m flex-ns flex-grow-1 justify-around white avenir f6 fw5">
+        <ul className="desktop-navigator list pl0 dn dn-m flex-ns justify-between white avenir f6 fw5">
           <li>
             <a href="#" data-position={contentPosition[0]} onClick={this.moveScroll} className="navigator link white-80 relative">How We Started</a>
           </li>
@@ -88,6 +88,9 @@ class Nav extends React.Component<Props, State> {
             letter-spacing: .1em;
             text-transform: uppercase;
             z-index: 5;
+          }
+          .desktop-navigator {
+            width: 700px;
           }
           .navigator:after, .navigator:before {
             background: rgba(255, 255, 255, 0.8);
