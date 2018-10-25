@@ -44,7 +44,7 @@ class Index extends React.Component<Props> {
 
   public render() {
     const { scrollY, isMobile, isShowVideoPlayer } = this.props
-    const imgPositon = isMobile ? 60 : 80
+    const imgPositon = isMobile ? 90 : 80
     return (
       <div className="w-100">
         <header>
@@ -621,22 +621,22 @@ class Index extends React.Component<Props> {
               We have come up with the ways we could make our goal possible through three different projects.<br />
               We envision a transformed environment in Northside of Syracuse through these projects.
             </p>
-            <div className="flex flex-column items-center georgia fw8 pa5">
-              <div className="flex flex-column flex-row-l mv3">
+            <div className="flex flex-column items-center georgia fw8 pa4 pa5-ns">
+              <div className="flex flex-column flex-row-l items-center mv3">
                 <img className="content-move mh5-ns shadow-3" height={ isMobile ? null : '300' } src="/static/process-1.jpg" />
                 <div className="flex flex-column justify-center text-content">
                   <h3 className="f3 fw7 mb3">Project 1</h3>
                   <p className="lh-copy">The area near Lodi Street in Syracuse is where refugees are resettled when they come from Afghanistan, Syria, Congo, Nepal and all over the world. They come with the hope that they will have a new life that is full of opportunities. However, the area near Lodi Street is known for its unsafe environment and collapsing houses. The idea our team came up with is to fix the houses our friends from abroad are resettled. Fixing houses will be used to give them hope. Information on maintaining a house will be given as well.</p>
                 </div>
               </div>
-              <div className="flex flex-column flex-row-l mv3">
+              <div className="flex flex-column flex-row-l items-center mv3">
                 <div className="flex flex-column order-1 order-0-l justify-center text-content">
                   <h3 className="f3 fw7 mb3">Project 2</h3>
                   <p className="lh-copy">In Europe, villages were formed around markets. People gathered where there was a market. If there are markets through which local people can make a living, they would not want to leave the area. Besides, our friends from abroad are so talented but have faced many limitations such as the language barrier. Our goal is to make it possible for our friends from abroad to open a business and utilize their talents.</p>
                 </div>
                 <img className="content-move mh5-ns order-0 order-1-l shadow-3" height={ isMobile ? null : '300' } src="/static/process-2.jpg" />
               </div>
-              <div className="flex flex-column flex-row-l mv3">
+              <div className="flex flex-column flex-row-l items-center mv3">
                 <img className="content-move mh5-ns shadow-3" height={ isMobile ? null : '300' } src="/static/process-3.jpg" />
                 <div className="flex flex-column justify-center text-content">
                   <h3 className="f3 fw7 mb3">Project 3</h3>
