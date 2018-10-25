@@ -1,8 +1,8 @@
-import React from 'react'
+import * as React from 'react'
 import App, { Container } from 'next/app'
-import Router from 'next/router'
+// import Router from 'next/router'
 import Head from 'next/head'
-import getConfig from 'next/config'
+// import getConfig from 'next/config'
 import { Provider } from 'react-redux'
 import { toast, ToastContainer } from 'react-toastify'
 import throttle from 'lodash/throttle'
@@ -10,14 +10,12 @@ import throttle from 'lodash/throttle'
 import Layout from 'src/components/layout'
 import { mobileRegexp } from 'src/constants/const'
 import { withReduxSaga } from 'src/redux/store'
-import { pageview } from 'src/shared/helper/gtag'
-import { ThemeState } from 'src/@types/types'
+// import { pageview } from 'src/shared/helper/gtag'
 
 interface Props {
   Component: React.Component
   pageProps: any
   store: any
-  theme: ThemeState
 }
 
 class MyApp extends App<Props> {
@@ -48,10 +46,10 @@ class MyApp extends App<Props> {
   }
 
   public render() {
-    const { Component, pageProps, store, isMobile, theme, asPath } = (this as any).props
-    Router.onRouteChangeStart = (url) => {
-      pageview(url, getConfig().publicRuntimeConfig.GA_TRACKING_ID)
-    }
+    const { Component, pageProps, store, isMobile, asPath } = (this as any).props
+    // Router.onRouteChangeStart = (url) => {
+    //   pageview(url, getConfig().publicRuntimeConfig.GA_TRACKING_ID)
+    // }
 
     return (
       <Container>
@@ -70,14 +68,17 @@ class MyApp extends App<Props> {
         />
         <Provider store={store}>
           { asPath.split('/')[1] == 'users' ?
-          <Component {...pageProps} isMobile={isMobile} theme={theme} />
+          <Component {...pageProps} isMobile={isMobile} />
           :
           <Layout isMobile={isMobile}>
-            <Component {...pageProps} isMobile={isMobile} theme={theme} />
+            <Component {...pageProps} isMobile={isMobile} />
           </Layout>
           }
         </Provider>
         <style jsx global>{`
+          .no-select {
+            user-select: none;
+          }
           .bg-primary {
             background-color: #7195BA;
           }
