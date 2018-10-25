@@ -1,9 +1,11 @@
 import * as React from 'react'
+import Link from 'next/link'
 import classNames from 'classnames'
 
 interface Props {
   isMobile: boolean
   scrollY: number
+  contentPosition: number[]
 }
 
 interface State {
@@ -11,7 +13,6 @@ interface State {
 }
 
 class Nav extends React.Component<Props, State> {
-
   public constructor(props) {
     super(props)
     this.state = {
@@ -25,51 +26,61 @@ class Nav extends React.Component<Props, State> {
     }))
   }
 
+  public moveScroll = (e) => {
+    const { isMobile } = this.props
+    e.preventDefault()
+
+    if (isMobile) this.toggleMenu()
+    window.scroll({ top: e.target.dataset.position * 0.98 - 100, behavior: 'smooth' })
+  }
+
   public render() {
-    const { scrollY } = this.props
+    const { scrollY, contentPosition } = this.props
     const { isOpenMenu } = this.state
 
     return (
-      <nav className={classNames('flex items-center justify-between absolute w-100 pa3 fixed bg-animate', { 'bg-primary': scrollY != 0 })}>
-        <a className="logo link flex flex-column items-start flex-grow-1" href="#">
-          <span className="f6 helvetica white-50 ba b--white-50 pa1">Building the Bridge</span>
-        </a>
-        <ul className="list pl0 dn flex-ns flex-grow-1 justify-around white avenir f6 fw5">
+      <nav className={classNames('flex items-center justify-between absolute w-100 pa3 fixed bg-animate', { 'bg-primary shadow-3': scrollY != 0 })}>
+        <Link href="/">
+          <a className="logo link flex flex-column items-start flex-grow-1">
+            <span className="f6 helvetica white-50 ba b--white-50 pa1">Building the Bridge</span>
+          </a>
+        </Link>
+        <ul className="list pl0 dn dn-m flex-ns flex-grow-1 justify-around white avenir f6 fw5">
           <li>
-            <a href="#" className="navigator link white-80 relative">How We Started</a>
+            <a href="#" data-position={contentPosition[0]} onClick={this.moveScroll} className="navigator link white-80 relative">How We Started</a>
           </li>
           <li>
-            <a href="#" className="navigator link white-80 relative">Our Vision</a>
+            <a href="#" data-position={contentPosition[1]} onClick={this.moveScroll} className="navigator link white-80 relative">Our Vision</a>
           </li>
           <li>
-            <a href="#" className="navigator link white-80 relative">Core Values</a>
+            <a href="#" data-position={contentPosition[2]} onClick={this.moveScroll} className="navigator link white-80 relative">Our Core Values</a>
           </li>
           <li>
-            <a href="#" className="navigator link white-80 relative">Our Process</a>
+            <a href="#" data-position={contentPosition[3]} onClick={this.moveScroll} className="navigator link white-80 relative">Our Process</a>
           </li>
           <li>
-            <a href="#" className="navigator link white-80 relative">Inspirations</a>
+            <a href="#" data-position={contentPosition[4]} onClick={this.moveScroll} className="navigator link white-80 relative">Inspirations</a>
           </li>
         </ul>
-        <div onClick={this.toggleMenu} className={classNames('menu-toggle dn-ns br-100 bg-animate bg-primary flex items-center justify-center', { 'active-menu': isOpenMenu })}>
+        <div onClick={this.toggleMenu} className={classNames('menu-toggle dn-l br-100 bg-animate bg-primary flex items-center justify-center', { 'active-menu': isOpenMenu })}>
           <span className={classNames('hamburger relative', { 'active-hamburger': isOpenMenu })}></span>
           <span className={classNames('menu-close relative', { 'active-close': isOpenMenu })}></span>
         </div>
-        <ul className={classNames('navigator-mobile flex flex-column justify-center items-center list absolute top-0 left-0 w-100 vh-100 ma0 pa0 bg-primary', { 'active-navigator-mobile': isOpenMenu })}>
+        <ul className={classNames('navigator-mobile flex flex-column justify-center items-center list absolute top-0 left-0 w-100 vh-100 ma0 pa0 bg-primary avenir f6 fw5', { 'active-navigator-mobile': isOpenMenu })}>
           <li className="mv3 pa2">
-            <a href="#" className="navigator link white-80 relative">How We Started</a>
+            <a href="#" data-position={contentPosition[0]} onClick={this.moveScroll} className="navigator link white-80 relative">How We Started</a>
           </li>
           <li className="mv3 pa2">
-            <a href="#" className="navigator link white-80 relative">Our Vision</a>
+            <a href="#" data-position={contentPosition[1]} onClick={this.moveScroll} className="navigator link white-80 relative">Our Vision</a>
           </li>
           <li className="mv3 pa2">
-            <a href="#" className="navigator link white-80 relative">Core Values</a>
+            <a href="#" data-position={contentPosition[2]} onClick={this.moveScroll} className="navigator link white-80 relative">Our Core Values</a>
           </li>
           <li className="mv3 pa2">
-            <a href="#" className="navigator link white-80 relative">Our Process</a>
+            <a href="#" data-position={contentPosition[3]} onClick={this.moveScroll} className="navigator link white-80 relative">Our Process</a>
           </li>
           <li className="mv3 pa2">
-            <a href="#" className="navigator link white-80 relative">Inspirations</a>
+            <a href="#" data-position={contentPosition[4]} onClick={this.moveScroll} className="navigator link white-80 relative">Inspirations</a>
           </li>
         </ul>
         <style jsx>{`
@@ -99,7 +110,12 @@ class Nav extends React.Component<Props, State> {
           .navigator:hover::after, .navigator:hover::before {
             transform: scale3d(1,1,1);
           }
+          .logo:focus, .navigator:focus {
+            outline: none;
+          }
           .logo {
+            width: 193px;
+            min-width: 193px;
             z-index: 10;
           }
           .svg-logo {

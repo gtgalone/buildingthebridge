@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import * as React from 'react'
 import 'isomorphic-unfetch'
 
 interface Props {
@@ -6,7 +6,7 @@ interface Props {
   users: any[]
 }
 
-export default class extends Component<Props> {
+export default class extends React.Component<Props> {
   static async getInitialProps ({ query: { id } }) {
     const users = await fetch('http://localhost:5000/api/users').then((res) => res.json())
     console.log(users)

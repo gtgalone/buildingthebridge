@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { withRouter } from 'next/router'
 import { connect } from 'react-redux'
 
@@ -11,6 +11,7 @@ interface Props {
   isMobile: boolean
   scrollY: number
   dispatchSetScrollY: (data: number) => any
+  contentPosition: number[]
 }
 
 interface State {
@@ -51,10 +52,10 @@ class Layout extends React.Component<Props, State> {
   }
 
   public render() {
-    const { children, isMobile, scrollY } = this.props
+    const { children, isMobile, scrollY, contentPosition } = this.props
     return (
       <React.Fragment>
-        <Nav isMobile={isMobile} scrollY={scrollY} />
+        <Nav isMobile={isMobile} scrollY={scrollY} contentPosition={contentPosition} />
         <div className="d-flex">
           {children}
         </div>
@@ -64,7 +65,8 @@ class Layout extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-  scrollY: state.scrollY
+  scrollY: state.scrollY,
+  contentPosition: state.contentPosition,
 })
 
 const mapDispatchToProps = dispatch => ({
