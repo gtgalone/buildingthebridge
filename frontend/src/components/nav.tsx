@@ -27,10 +27,10 @@ class Nav extends React.Component<Props, State> {
   }
 
   public moveScroll = (e) => {
-    const { isMobile } = this.props
+    const { isOpenMenu } = this.state
     e.preventDefault()
 
-    if (isMobile) this.toggleMenu()
+    if (isOpenMenu) this.toggleMenu()
     window.scroll({ top: e.target.dataset.position * 0.98 - 100, behavior: 'smooth' })
   }
 
@@ -115,6 +115,7 @@ class Nav extends React.Component<Props, State> {
           }
           .logo {
             width: 193px;
+            max-width: 193px;
             min-width: 193px;
             z-index: 10;
           }
