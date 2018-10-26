@@ -33,7 +33,7 @@ export const PASSWORD = createFormAction('PASSWORD')
 export const RESET_PASSWORD = createFormAction('RESET_PASSWORD')
 
 export const SET_SCROLL_Y = 'SET_SCROLL_Y'
-export const SET_IS_SHOW_VIDEO_PLAYER = 'SET_IS_SHOW_VIDEO_PLAYER'
+export const SET_IS_SHOW_IFRAME_PLAYER = 'SET_IS_SHOW_IFRAME_PLAYER'
 export const SET_CONTENT_POSITION = 'SET_CONTENT_POSITION'
 
 function action(type: string, payload = {}) {
@@ -51,5 +51,5 @@ export interface Entity {
 }
 
 export const setScrollY = (data: number) => action(SET_SCROLL_Y, { data })
-export const setIsShowVideoPlayer = (data: boolean) => action(SET_IS_SHOW_VIDEO_PLAYER, { data })
+export const setIsShowIframePlayer = (data: boolean) => action(SET_IS_SHOW_IFRAME_PLAYER, { data })
 export const setContentPosition = (data: number[]) => action(SET_CONTENT_POSITION, { data })

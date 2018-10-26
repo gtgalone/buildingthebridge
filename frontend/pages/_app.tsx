@@ -85,14 +85,20 @@ class MyApp extends App<Props> {
           .bg-secondary {
             background-color: #FFDD56;
           }
+          .bg-third {
+            background-color: #1B3443;
+          }
           .text-primary {
             color: #7195BA;
           }
           .text-secondary {
             color: #FFDD56;
           }
-          .text-content {
+          .text-third {
             color: #1B3443;
+          }
+          .z-index-10 {
+            z-index: 10;
           }
         `}</style>
       </Container>
