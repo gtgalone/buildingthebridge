@@ -2,7 +2,7 @@ export interface Parcel {}
 
 export interface RootState {
   scrollY: number
-  isShowVideoPlayer: boolean
+  isShowIframePlayer: boolean
   contentPosition: number[]
 }
 

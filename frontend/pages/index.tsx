@@ -1,49 +1,88 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import classNames from 'classnames'
+
 import { RootState } from 'src/@types/types'
-import VideoPlayer from 'src/components/video-player'
-import { setIsShowVideoPlayer, setContentPosition } from 'src/redux/actions'
+import IframePlayer from 'src/components/iframe-player'
+import { setIsShowIframePlayer, setContentPosition } from 'src/redux/actions'
 
 interface Props {
   isMobile: boolean
   scrollY: number
-  isShowVideoPlayer: boolean
-  dispatchSetIsShowVideoPlayer: (arg: boolean) => any
+  isShowIframePlayer: boolean
+  dispatchSetIsShowIframePlayer: (arg: boolean) => any
   dispatchSetContentPosition: (arg: number[]) => any
 }
 
-class Index extends React.Component<Props> {
+interface State {
+  source: string
+  tab: number
+  imageHeight: number
+  isArticle: boolean
+}
+
+class Index extends React.Component<Props, State> {
   private content1Ref: any
   private content2Ref: any
   private content3Ref: any
   private content4Ref: any
+  private content5Ref: any
+  private imageRef: any
 
   public constructor(props) {
     super(props)
+    this.state = {
+      source: null,
+      tab: 0,
+      imageHeight: 0,
+      isArticle: false
+    }
     this.content1Ref = React.createRef()
     this.content2Ref = React.createRef()
     this.content3Ref = React.createRef()
     this.content4Ref = React.createRef()
+    this.content5Ref = React.createRef()
+    this.imageRef = React.createRef()
   }
 
   public componentDidMount() {
     const { dispatchSetContentPosition } = this.props
-
+    const { imageHeight } = this.state
+    if (imageHeight == 0) this.setState({
+      imageHeight: this.imageRef.current.height
+    })
     dispatchSetContentPosition([
       this.content1Ref.current.offsetTop,
       this.content2Ref.current.offsetTop,
       this.content3Ref.current.offsetTop,
-      this.content4Ref.current.offsetTop
+      this.content4Ref.current.offsetTop + 50,
+      this.content5Ref.current.offsetTop + 150
     ])
   }
 
-  public toggleVideoPlayer = () => {
-    const { isShowVideoPlayer, dispatchSetIsShowVideoPlayer } = this.props
-    dispatchSetIsShowVideoPlayer(!isShowVideoPlayer)
+  public toggleVideoPlayer = (e) => {
+    const { isShowIframePlayer, dispatchSetIsShowIframePlayer } = this.props
+
+    if (!isShowIframePlayer) this.setState({ source: e.target.dataset.source })
+
+    dispatchSetIsShowIframePlayer(!isShowIframePlayer)
+
+    if (e.target.dataset.type == 'article') {
+      this.setState({ isArticle: true })
+    } else {
+      setTimeout(() => this.setState({ isArticle: false }), 500)
+    }
+  }
+
+  public handleTab = (e) => {
+    this.setState({
+      tab: e.target.dataset.value
+    })
   }
 
   public render() {
-    const { scrollY, isMobile, isShowVideoPlayer } = this.props
+    const { scrollY, isMobile, isShowIframePlayer } = this.props
+    const { source, tab, imageHeight, isArticle } = this.state
     const imgPositon = isMobile ? 90 : 80
     return (
       <div className="w-100">
@@ -63,7 +102,7 @@ class Index extends React.Component<Props> {
           </div>
         </header>
         <main>
-          <section className="content w-100 tc relative bg-secondary pv3">
+          <section className="content w-100 tc relative bg-secondary pt5">
             <div className="content-text content-move flex flex-column flex-row-l items-center ml-auto pa4 pa5-ns shadow-3">
               <div className="text-secondary flex-grow-1">
                 <svg style={{ fill: 'currentcolor' }} width="250" height="120" viewBox="20 160 390 100">
@@ -557,17 +596,17 @@ class Index extends React.Component<Props> {
                 </g>
               </svg>
               </div>
-              <p className="georgia w-50-ns fw8 lh-copy ma0 text-content flex-grow-1">
+              <p className="georgia w-50-ns fw8 lh-copy ma0 text-third flex-grow-1">
                 We are a team of people in many different fields pursuing one goal.<br />Our goal is to transform the darkest street in Syracuse into the brightest street.<br />
                 We strive to remove the walls that stand between generation to generation, people to people, country to country and build a single unified community in Love.
               </p>
             </div>
           </section>
-          <section ref={this.content1Ref} className="content w-100 tc relative bg-secondary pv3">
-            <div className="content-text-2 content-move georgia pa4 pa5-ns shadow-3">
-              <h3 className="f3 f1-ns fw9 ma0 mb4 text-content">How we started</h3>
+          <section ref={this.content1Ref} className="content w-100 tc relative bg-secondary pt5">
+            <div className="content-text-2 content-move georgia pa4 pa5-ns shadow-3 center">
+              <h3 className="f3 f1-ns fw9 ma0 mb4 text-third">How we started</h3>
               <div className="flex flex-column flex-row-l items-center">
-                <p className="w-50-ns fw8 lh-copy ma0 text-content flex-grow-1">
+                <p className="w-50-ns fw8 lh-copy ma0 text-third flex-grow-1">
                   We reside in Syracuse, New York and have met refugees who were resettled in Northside of Syracuse through Boaz computer class project.<br />
                   Since 2007, Boaz team has built relationships with refugees.<br />
                   Through the project, we were able to become aware of what they go through as newly-arrived new Americans. <br />
@@ -578,24 +617,24 @@ class Index extends React.Component<Props> {
               </div>
             </div>
           </section>
-          <section ref={this.content2Ref} className="content w-100 tc relative bg-primary pv3">
+          <section ref={this.content2Ref} className="content w-100 tc relative bg-primary pt5">
             <div className="content-text content-move georgia pa4 pa5-ns shadow-3">
-              <h3 className="f3 f1-ns fw9 ma0 mb4 text-content">Our Vision</h3>
+              <h3 className="f3 f1-ns fw9 ma0 mb4 text-third">Our Vision</h3>
               <div className="flex flex-column items-center">
-                <p className="w-50-ns fw8 lh-copy ma0 text-content flex-grow-1 mb3">
+                <p className="w-50-ns fw8 lh-copy ma0 text-third flex-grow-1 mb3">
                   "To remove the walls that stand between generation to generation, people to people, country to country and build a single unified community in Love."
                 </p>
                 <div className="relative flex justify-center items-center">
                   <img src="/static/vision-thumbnail.jpg" />
-                  <i onClick={this.toggleVideoPlayer} className="fas fa-play-circle f1 red absolute pointer grow"></i>
+                  <i data-source="https://www.youtube.com/embed/zb8OcNN83N4?autoplay=1" onClick={this.toggleVideoPlayer} className="fas fa-play-circle f1 text-primary absolute pointer grow bg-white br-100"></i>
                 </div>
               </div>
             </div>
           </section>
-          <section ref={this.content3Ref} className="content w-100 tc relative bg-secondary pv3">
-            <div className="content-text-2 content-move georgia pa4 pa5-ns shadow-3">
-              <h3 className="f3 f1-ns fw9 ma0 mb4 text-content">Our Core Values</h3>
-              <div className="flex flex-column flex-row-ns items-start georgia fw8 text-content">
+          <section ref={this.content3Ref} className="content w-100 tc relative bg-secondary pt5">
+            <div className="content-text-2 content-move georgia pa4 pa5-ns shadow-3 center">
+              <h3 className="f3 f1-ns fw9 ma0 mb4 text-third">Our Core Values</h3>
+              <div className="flex flex-column flex-row-ns items-start georgia fw8 text-third">
                 <div className="our-core-values-item flex flex-column">
                   <img className="mb3" src="/static/rebuild.png" />
                   <span className="mb3">Rebuild</span>
@@ -614,9 +653,9 @@ class Index extends React.Component<Props> {
               </div>
             </div>
           </section>
-          <section ref={this.content4Ref} className="content w-100 tc relative bg-secondary pb3">
-            <h3 className="georgia f3 f1-ns fw9 ma0 mb4 text-content">Our Process</h3>
-            <p className="georgia fw8 lh-copy ma0 pa4 text-content flex-grow-1">
+          <section ref={this.content4Ref} className="content w-100 tc relative bg-secondary pt3">
+            <h3 className="georgia f3 f1-ns fw9 ma0 mb4 text-third">Our Process</h3>
+            <p className="georgia fw8 lh-copy ma0 pa4 text-third flex-grow-1">
               Our team focuses on three long-term projects that will make the darkest street in Syracuse into the brightest street.<br />
               We have come up with the ways we could make our goal possible through three different projects.<br />
               We envision a transformed environment in Northside of Syracuse through these projects.
@@ -624,13 +663,13 @@ class Index extends React.Component<Props> {
             <div className="flex flex-column items-center georgia fw8 pa4 pa5-ns">
               <div className="flex flex-column flex-row-l items-center mv3">
                 <img className="content-move mh5-ns shadow-3" height={ isMobile ? null : '300' } src="/static/process-1.jpg" />
-                <div className="flex flex-column justify-center text-content">
+                <div className="flex flex-column justify-center text-third">
                   <h3 className="f3 fw7 mb3">Project 1</h3>
                   <p className="lh-copy">The area near Lodi Street in Syracuse is where refugees are resettled when they come from Afghanistan, Syria, Congo, Nepal and all over the world. They come with the hope that they will have a new life that is full of opportunities. However, the area near Lodi Street is known for its unsafe environment and collapsing houses. The idea our team came up with is to fix the houses our friends from abroad are resettled. Fixing houses will be used to give them hope. Information on maintaining a house will be given as well.</p>
                 </div>
               </div>
               <div className="flex flex-column flex-row-l items-center mv3">
-                <div className="flex flex-column order-1 order-0-l justify-center text-content">
+                <div className="flex flex-column order-1 order-0-l justify-center text-third">
                   <h3 className="f3 fw7 mb3">Project 2</h3>
                   <p className="lh-copy">In Europe, villages were formed around markets. People gathered where there was a market. If there are markets through which local people can make a living, they would not want to leave the area. Besides, our friends from abroad are so talented but have faced many limitations such as the language barrier. Our goal is to make it possible for our friends from abroad to open a business and utilize their talents.</p>
                 </div>
@@ -638,16 +677,54 @@ class Index extends React.Component<Props> {
               </div>
               <div className="flex flex-column flex-row-l items-center mv3">
                 <img className="content-move mh5-ns shadow-3" height={ isMobile ? null : '300' } src="/static/process-3.jpg" />
-                <div className="flex flex-column justify-center text-content">
+                <div className="flex flex-column justify-center text-third">
                   <h3 className="f3 fw7 mb3">Project 3</h3>
                   <p className="lh-copy">Syracuse is unique because there are people from so many countries living in this city. It would be a great idea to utilize the human resources to promote the city through an international museum/library. To imagine an international museum displaying beautiful clothes and traditional items from all over the world is already exciting. People from other cities will visit Syracuse to look around this museum and get inspirations by seeing all those diverse items displayed.</p>
                 </div>
               </div>
             </div>
           </section>
+          <section ref={this.content5Ref} className="content w-100 tc relative bg-secondary pa4 pa5-ns">
+            <h3 className="georgia f3 f1-ns fw9 ma0 mb4 text-third">Inspirations</h3>
+            <div className="inspirations flex flex-column items-center georgia fw8 center shadow-3">
+              <ul className="list w-100 flex ma0 pa0">
+                <li data-value={0} onClick={this.handleTab} className={classNames('flex-grow-1 pa2 pa3-ns pointer hover-white bg-animate br b--white-10', tab == 0 ? 'bg-primary white shadow-1' : 'bg-third white-60')}>Market</li>
+                <li data-value={1} onClick={this.handleTab} className={classNames('flex-grow-1 pa2 pa3-ns pointer hover-white bg-animate br b--white-10', tab == 1 ? 'bg-primary white shadow-1' : 'bg-third white-60')}>Library</li>
+                <li data-value={2} onClick={this.handleTab} className={classNames('flex-grow-1 pa2 pa3-ns pointer hover-white bg-animate', tab == 2 ? 'bg-primary white shadow-1' : 'bg-third white-60')}>Housing</li>
+              </ul>
+              <div className="w-100 relative" style={{ height: imageHeight }}>
+                <div className={classNames('inspirations-market absolute flex justify-center items-center', { 'z-index-10': tab == 0 })}>
+                  <div className="absolute top-2 white" style={{ fontSize: '2vw' }}>
+                    <div className="mb2">Forgotten Main Street as affordable</div>
+                    <div>new frontier: Water Valley, Mississippi</div>
+                    <p className="lh-copy ph3 w-75-ns center">This project in Mississippi is very similar to what we are planning to do in Northside Syracuse.</p>
+                  </div>
+                  <img ref={this.imageRef} src="/static/market.jpg" />
+                  <i data-source="https://www.youtube.com/embed/kChc7PVQFwA?autoplay=1" onClick={this.toggleVideoPlayer} className="fas fa-play-circle f1 text-primary absolute pointer grow bg-white br-100"></i>
+                </div>
+                <div className={classNames('inspirations-library absolute flex justify-center items-center', { 'z-index-10': tab == 1 })}>
+                  <div className="absolute top-2 white" style={{ fontSize: '2vw' }}>
+                    <div>"An-San Multicultural library"</div>
+                    <p className="lh-copy ph3 w-75-ns center">An San Multicultural library serves the diverse population with many different book sections for each country.</p>
+                  </div>
+                  <img src="/static/library.jpg" />
+                  <span onClick={this.toggleVideoPlayer} className="bg-primary absolute pointer grow br-100 flex justify-center items-center ba b--white" style={{ width: 47, height: 47 }}>
+                    <i data-type="article" data-source="http://www.koreaherald.com/view.php?ud=20120327000647" className="fas fa-book-open f3 white"></i>
+                  </span>
+                </div>
+                <div className={classNames('inspirations-housing absolute flex justify-center items-center', { 'z-index-10': tab == 2 })}>
+                  <div className="absolute top-2 white" style={{ fontSize: '2vw' }}>
+                    <div>The World's First Non-Rectangular Soccer Field</div>
+                  </div>
+                  <img src="/static/housing.jpg" />
+                  <i data-source="https://www.youtube.com/embed/YanHrKL6KIU?autoplay=1" onClick={this.toggleVideoPlayer} className="fas fa-play-circle f1 text-primary absolute pointer grow bg-white br-100"></i>
+                </div>
+              </div>
+            </div>
+          </section>
         </main>
         <footer>
-          <section className="footer flex flex-column flex-row-ns bg-primary pa5 white">
+          <section className="flex flex-column flex-row-ns bg-primary pa5 white bg-third">
             <div className="flex flex-column georgia w-50-ns">
               <h3 className="f3 fw7">Contact Us</h3>
               <p className="lh-copy">
@@ -664,7 +741,10 @@ class Index extends React.Component<Props> {
             </div>
           </section>
         </footer>
-        <VideoPlayer show={isShowVideoPlayer} close={this.toggleVideoPlayer} />
+        <div className={classNames('player-background w-100 vh-100 fixed top-0 left-0 z-index-10', isArticle ? 'bg-white' : 'bg-black')}>
+          <i onClick={this.toggleVideoPlayer} className="fas fa-times-circle f1 text-primary absolute right-2 top-2 pointer grow bg-white br-100"></i>
+          { isShowIframePlayer && <IframePlayer source={source} /> }
+        </div>
         <style jsx>{`
           hr {
             border: 1px solid #FFFFFF;
@@ -722,14 +802,27 @@ class Index extends React.Component<Props> {
             width: 95%;
             background-color: #F5F0E8;
           }
-          .content-text-2 {
-            margin: auto;
-          }
           .our-core-values-item {
             height: 250px;
           }
-          .footer {
-            background-color: #1B3443;
+          .inspirations {
+            max-width: 1100px;
+          }
+          .inspirations-market, .inspirations-library, .inspirations-housing {
+            transition: opacity ease 0.5s;
+          }
+          .inspirations-market {
+            opacity: ${ tab == 0 ? 1 : 0 };
+          }
+          .inspirations-library {
+            opacity: ${ tab == 1 ? 1 : 0 };
+          }
+          .inspirations-housing {
+            opacity: ${ tab == 2 ? 1 : 0 };
+          }
+          .player-background {
+            transform: scale(${ isShowIframePlayer ? 1 : 0 });
+            transition: transform ease 0.5s;
           }
         `}</style>
       </div>
@@ -739,11 +832,11 @@ class Index extends React.Component<Props> {
 
 const mapStateToProps = (state: RootState) => ({
   scrollY: state.scrollY,
-  isShowVideoPlayer: state.isShowVideoPlayer
+  isShowIframePlayer: state.isShowIframePlayer
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchSetIsShowVideoPlayer: (arg: boolean) => dispatch(setIsShowVideoPlayer(arg)),
+  dispatchSetIsShowIframePlayer: (arg: boolean) => dispatch(setIsShowIframePlayer(arg)),
   dispatchSetContentPosition: (arg: number[]) => dispatch(setContentPosition(arg))
 })
 
