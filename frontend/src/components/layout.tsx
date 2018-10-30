@@ -11,7 +11,6 @@ interface Props {
   isMobile: boolean
   scrollY: number
   dispatchSetScrollY: (data: number) => any
-  contentPosition: number[]
 }
 
 interface State {
@@ -52,10 +51,10 @@ class Layout extends React.Component<Props, State> {
   }
 
   public render() {
-    const { children, isMobile, scrollY, contentPosition } = this.props
+    const { children, isMobile, scrollY } = this.props
     return (
       <React.Fragment>
-        <Nav isMobile={isMobile} scrollY={scrollY} contentPosition={contentPosition} />
+        <Nav isMobile={isMobile} scrollY={scrollY} />
         <div className="d-flex">
           {children}
         </div>
@@ -66,7 +65,6 @@ class Layout extends React.Component<Props, State> {
 
 const mapStateToProps = (state: RootState) => ({
   scrollY: state.scrollY,
-  contentPosition: state.contentPosition,
 })
 
 const mapDispatchToProps = dispatch => ({

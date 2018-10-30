@@ -10,7 +10,7 @@ interface Window {
   gtag: any
   email: string
   scrollEvent: any
-  abcd: number
+  contentPosition: any[]
 }
 declare module '*.png' {
   const resource: string
