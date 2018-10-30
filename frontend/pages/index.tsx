@@ -4,7 +4,8 @@ import classNames from 'classnames'
 
 import { RootState } from 'src/@types/types'
 import IframePlayer from 'src/components/iframe-player'
-import { setIsShowIframePlayer, setContentPosition } from 'src/redux/actions'
+import { setIsShowIframePlayer } from 'src/redux/actions'
+import InspirationsArticle from 'src/components/inspirations-article'
 
 interface Props {
   isMobile: boolean
@@ -27,7 +28,6 @@ class Index extends React.Component<Props, State> {
   private content3Ref: any
   private content4Ref: any
   private content5Ref: any
-  private imageRef: any
 
   public constructor(props) {
     super(props)
@@ -42,25 +42,19 @@ class Index extends React.Component<Props, State> {
     this.content3Ref = React.createRef()
     this.content4Ref = React.createRef()
     this.content5Ref = React.createRef()
-    this.imageRef = React.createRef()
   }
 
   public componentDidMount() {
-    const { dispatchSetContentPosition } = this.props
-    const { imageHeight } = this.state
-    if (imageHeight == 0) this.setState({
-      imageHeight: this.imageRef.current.height
-    })
-    dispatchSetContentPosition([
+    window.contentPosition = [
       this.content1Ref.current.offsetTop,
       this.content2Ref.current.offsetTop,
       this.content3Ref.current.offsetTop,
       this.content4Ref.current.offsetTop + 50,
-      this.content5Ref.current.offsetTop + 150
-    ])
+      this.content5Ref.current
+    ]
   }
 
-  public toggleVideoPlayer = (e) => {
+  public toggleIframePlayer = (e) => {
     const { isShowIframePlayer, dispatchSetIsShowIframePlayer } = this.props
 
     if (!isShowIframePlayer) this.setState({ source: e.target.dataset.source })
@@ -82,7 +76,7 @@ class Index extends React.Component<Props, State> {
 
   public render() {
     const { scrollY, isMobile, isShowIframePlayer } = this.props
-    const { source, tab, imageHeight, isArticle } = this.state
+    const { source, tab, isArticle } = this.state
     const imgPositon = isMobile ? 90 : 80
     return (
       <div className="w-100">
@@ -626,7 +620,9 @@ class Index extends React.Component<Props, State> {
                 </p>
                 <div className="relative flex justify-center items-center">
                   <img src="/static/vision-thumbnail.jpg" />
-                  <i data-source="https://www.youtube.com/embed/zb8OcNN83N4?autoplay=1" onClick={this.toggleVideoPlayer} className="fas fa-play-circle f1 text-primary absolute pointer grow bg-white br-100"></i>
+                  <span onClick={this.toggleIframePlayer} className="bg-primary absolute pointer br-100 flex justify-center items-center ba b--white" style={{ width: 47, height: 47 }}>
+                    <i data-source="https://www.youtube.com/embed/zb8OcNN83N4?autoplay=1" className="fas fa-play f3 white absolute grow"></i>
+                  </span>
                 </div>
               </div>
             </div>
@@ -686,38 +682,42 @@ class Index extends React.Component<Props, State> {
           </section>
           <section ref={this.content5Ref} className="content w-100 tc relative bg-secondary pa4 pa5-ns">
             <h3 className="georgia f3 f1-ns fw9 ma0 mb4 text-third">Inspirations</h3>
-            <div className="inspirations flex flex-column items-center georgia fw8 center shadow-3">
-              <ul className="list w-100 flex ma0 pa0">
-                <li data-value={0} onClick={this.handleTab} className={classNames('flex-grow-1 pa2 pa3-ns pointer hover-white bg-animate br b--white-10', tab == 0 ? 'bg-primary white shadow-1' : 'bg-third white-60')}>Market</li>
-                <li data-value={1} onClick={this.handleTab} className={classNames('flex-grow-1 pa2 pa3-ns pointer hover-white bg-animate br b--white-10', tab == 1 ? 'bg-primary white shadow-1' : 'bg-third white-60')}>Library</li>
-                <li data-value={2} onClick={this.handleTab} className={classNames('flex-grow-1 pa2 pa3-ns pointer hover-white bg-animate', tab == 2 ? 'bg-primary white shadow-1' : 'bg-third white-60')}>Housing</li>
+            <div className="inspirations flex flex-column items-center georgia fw8 center shadow-1">
+              <ul className="list w-100 flex ma0 pa0 bg-third">
+                <li data-value={0} onClick={this.handleTab} className={classNames('flex-grow-1 pa2 pa3-ns pointer hover-white bg-animate br b--white-10', tab == 0 ? 'bg-primary white shadow-1' : 'white-60')}>Market</li>
+                <li data-value={1} onClick={this.handleTab} className={classNames('flex-grow-1 pa2 pa3-ns pointer hover-white bg-animate br b--white-10', tab == 1 ? 'bg-primary white shadow-1' : 'white-60')}>Library</li>
+                <li data-value={2} onClick={this.handleTab} className={classNames('flex-grow-1 pa2 pa3-ns pointer hover-white bg-animate', tab == 2 ? 'bg-primary white shadow-1' : 'white-60')}>Housing</li>
               </ul>
-              <div className="w-100 relative" style={{ height: imageHeight }}>
-                <div className={classNames('inspirations-market absolute flex justify-center items-center', { 'z-index-10': tab == 0 })}>
-                  <div className="absolute top-2 white" style={{ fontSize: '2vw' }}>
+              <div className="inspirations-content w-100 relative">
+                <div className={classNames('inspirations-market absolute flex justify-center items-center h-100', { 'z-index-10': tab == 0 })}>
+                  <div className="absolute top-2 white">
                     <div className="mb2">Forgotten Main Street as affordable</div>
                     <div>new frontier: Water Valley, Mississippi</div>
                     <p className="lh-copy ph3 w-75-ns center">This project in Mississippi is very similar to what we are planning to do in Northside Syracuse.</p>
                   </div>
-                  <img ref={this.imageRef} src="/static/market.jpg" />
-                  <i data-source="https://www.youtube.com/embed/kChc7PVQFwA?autoplay=1" onClick={this.toggleVideoPlayer} className="fas fa-play-circle f1 text-primary absolute pointer grow bg-white br-100"></i>
+                  <img className="h-100" src="/static/market.jpg" />
+                  <span onClick={this.toggleIframePlayer} className="bg-primary absolute pointer br-100 flex justify-center items-center ba b--white" style={{ width: 47, height: 47 }}>
+                    <i data-source="https://www.youtube.com/embed/kChc7PVQFwA?autoplay=1" className="fas fa-play f3 white absolute grow"></i>
+                  </span>
                 </div>
-                <div className={classNames('inspirations-library absolute flex justify-center items-center', { 'z-index-10': tab == 1 })}>
-                  <div className="absolute top-2 white" style={{ fontSize: '2vw' }}>
+                <div className={classNames('inspirations-library absolute flex justify-center items-center h-100', { 'z-index-10': tab == 1 })}>
+                  <div className="absolute top-2 white">
                     <div>"An-San Multicultural library"</div>
                     <p className="lh-copy ph3 w-75-ns center">An San Multicultural library serves the diverse population with many different book sections for each country.</p>
                   </div>
-                  <img src="/static/library.jpg" />
-                  <span onClick={this.toggleVideoPlayer} className="bg-primary absolute pointer grow br-100 flex justify-center items-center ba b--white" style={{ width: 47, height: 47 }}>
-                    <i data-type="article" data-source="http://www.koreaherald.com/view.php?ud=20120327000647" className="fas fa-book-open f3 white"></i>
+                  <img className="h-100" src="/static/library.jpg" />
+                  <span onClick={this.toggleIframePlayer} className="bg-primary absolute pointer br-100 flex justify-center items-center ba b--white" style={{ width: 47, height: 47 }}>
+                    <i data-type="article" data-source="http://www.koreaherald.com/view.php?ud=20120327000647" className="fas fa-book-open f3 white grow"></i>
                   </span>
                 </div>
-                <div className={classNames('inspirations-housing absolute flex justify-center items-center', { 'z-index-10': tab == 2 })}>
-                  <div className="absolute top-2 white" style={{ fontSize: '2vw' }}>
+                <div className={classNames('inspirations-housing absolute flex justify-center items-center h-100', { 'z-index-10': tab == 2 })}>
+                  <div className="absolute top-2 white">
                     <div>The World's First Non-Rectangular Soccer Field</div>
                   </div>
-                  <img src="/static/housing.jpg" />
-                  <i data-source="https://www.youtube.com/embed/YanHrKL6KIU?autoplay=1" onClick={this.toggleVideoPlayer} className="fas fa-play-circle f1 text-primary absolute pointer grow bg-white br-100"></i>
+                  <img className="h-100" src="/static/housing.jpg" />
+                  <span onClick={this.toggleIframePlayer} className="bg-primary absolute pointer br-100 flex justify-center items-center ba b--white" style={{ width: 47, height: 47 }}>
+                    <i data-source="https://www.youtube.com/embed/YanHrKL6KIU?autoplay=1" className="fas fa-play f3 white absolute grow"></i>
+                  </span>
                 </div>
               </div>
             </div>
@@ -741,9 +741,9 @@ class Index extends React.Component<Props, State> {
             </div>
           </section>
         </footer>
-        <div className={classNames('player-background w-100 vh-100 fixed top-0 left-0 z-index-10', isArticle ? 'bg-white' : 'bg-black')}>
-          <i onClick={this.toggleVideoPlayer} className="fas fa-times-circle f1 text-primary absolute right-2 top-2 pointer grow bg-white br-100"></i>
-          { isShowIframePlayer && <IframePlayer source={source} /> }
+        <div className={classNames('player-background w-100 vh-100 fixed top-0 left-0 z-index-10', isArticle ? 'bg-white overflow-auto' : 'bg-black')}>
+          <i onClick={this.toggleIframePlayer} className="fas fa-times-circle f1 text-primary absolute right-2 top-2 pointer grow bg-white br-100"></i>
+          { isShowIframePlayer && ( isArticle ? <InspirationsArticle /> : <IframePlayer source={source} /> ) }
         </div>
         <style jsx>{`
           hr {
@@ -788,6 +788,9 @@ class Index extends React.Component<Props, State> {
           .arrow-down {
             animation: bounce 3s infinite;
           }
+          .fa-play {
+            left: 15px;
+          }
           .content-move {
             transform: translateY(-${scrollY / 100 * 5}px);
             transition: transform 0.3s cubic-bezier(0.37,0.16,0.12,1);
@@ -806,9 +809,10 @@ class Index extends React.Component<Props, State> {
             height: 250px;
           }
           .inspirations {
-            max-width: 1100px;
+            max-width: 784px;
           }
           .inspirations-market, .inspirations-library, .inspirations-housing {
+            font-size: 2vw;
             transition: opacity ease 0.5s;
           }
           .inspirations-market {
@@ -819,6 +823,10 @@ class Index extends React.Component<Props, State> {
           }
           .inspirations-housing {
             opacity: ${ tab == 2 ? 1 : 0 };
+          }
+          .inspirations-content {
+            height: 44vw;
+            max-height: 400px;
           }
           .player-background {
             transform: scale(${ isShowIframePlayer ? 1 : 0 });
@@ -836,8 +844,7 @@ const mapStateToProps = (state: RootState) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchSetIsShowIframePlayer: (arg: boolean) => dispatch(setIsShowIframePlayer(arg)),
-  dispatchSetContentPosition: (arg: number[]) => dispatch(setContentPosition(arg))
+  dispatchSetIsShowIframePlayer: (arg: boolean) => dispatch(setIsShowIframePlayer(arg))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Index)

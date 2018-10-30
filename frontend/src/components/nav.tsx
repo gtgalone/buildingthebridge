@@ -5,7 +5,6 @@ import classNames from 'classnames'
 interface Props {
   isMobile: boolean
   scrollY: number
-  contentPosition: number[]
 }
 
 interface State {
@@ -29,13 +28,16 @@ class Nav extends React.Component<Props, State> {
   public moveScroll = (e) => {
     const { isOpenMenu } = this.state
     e.preventDefault()
-
     if (isOpenMenu) this.toggleMenu()
-    window.scroll({ top: e.target.dataset.position * 0.98 - 100, behavior: 'smooth' })
+    if (e.target.dataset.position == 4) {
+      window.contentPosition[e.target.dataset.position].scrollIntoView({ block: 'center', behavior: 'smooth' })
+    } else {
+      window.scroll({ top: window.contentPosition[e.target.dataset.position] * 0.98 - 100, behavior: 'smooth' })
+    }
   }
 
   public render() {
-    const { scrollY, contentPosition } = this.props
+    const { scrollY } = this.props
     const { isOpenMenu } = this.state
 
     return (
@@ -47,19 +49,19 @@ class Nav extends React.Component<Props, State> {
         </Link>
         <ul className="desktop-navigator list pl0 dn dn-m flex-ns justify-between white avenir f6 fw5">
           <li>
-            <a href="#" data-position={contentPosition[0]} onClick={this.moveScroll} className="navigator link white-80 relative">How We Started</a>
+            <a href="#" data-position={0} onClick={this.moveScroll} className="navigator link white-80 relative">How We Started</a>
           </li>
           <li>
-            <a href="#" data-position={contentPosition[1]} onClick={this.moveScroll} className="navigator link white-80 relative">Our Vision</a>
+            <a href="#" data-position={1} onClick={this.moveScroll} className="navigator link white-80 relative">Our Vision</a>
           </li>
           <li>
-            <a href="#" data-position={contentPosition[2]} onClick={this.moveScroll} className="navigator link white-80 relative">Our Core Values</a>
+            <a href="#" data-position={2} onClick={this.moveScroll} className="navigator link white-80 relative">Our Core Values</a>
           </li>
           <li>
-            <a href="#" data-position={contentPosition[3]} onClick={this.moveScroll} className="navigator link white-80 relative">Our Process</a>
+            <a href="#" data-position={3} onClick={this.moveScroll} className="navigator link white-80 relative">Our Process</a>
           </li>
           <li>
-            <a href="#" data-position={contentPosition[4]} onClick={this.moveScroll} className="navigator link white-80 relative">Inspirations</a>
+            <a href="#" data-position={4} onClick={this.moveScroll} className="navigator link white-80 relative">Inspirations</a>
           </li>
         </ul>
         <div onClick={this.toggleMenu} className={classNames('menu-toggle dn-l br-100 bg-animate bg-primary flex items-center justify-center', { 'active-menu': isOpenMenu })}>
@@ -68,19 +70,19 @@ class Nav extends React.Component<Props, State> {
         </div>
         <ul className={classNames('navigator-mobile flex flex-column justify-center items-center list absolute top-0 left-0 w-100 vh-100 ma0 pa0 bg-primary avenir f6 fw5', { 'active-navigator-mobile': isOpenMenu })}>
           <li className="mv3 pa2">
-            <a href="#" data-position={contentPosition[0]} onClick={this.moveScroll} className="navigator link white-80 relative">How We Started</a>
+            <a href="#" data-position={0} onClick={this.moveScroll} className="navigator link white-80 relative">How We Started</a>
           </li>
           <li className="mv3 pa2">
-            <a href="#" data-position={contentPosition[1]} onClick={this.moveScroll} className="navigator link white-80 relative">Our Vision</a>
+            <a href="#" data-position={1} onClick={this.moveScroll} className="navigator link white-80 relative">Our Vision</a>
           </li>
           <li className="mv3 pa2">
-            <a href="#" data-position={contentPosition[2]} onClick={this.moveScroll} className="navigator link white-80 relative">Our Core Values</a>
+            <a href="#" data-position={2} onClick={this.moveScroll} className="navigator link white-80 relative">Our Core Values</a>
           </li>
           <li className="mv3 pa2">
-            <a href="#" data-position={contentPosition[3]} onClick={this.moveScroll} className="navigator link white-80 relative">Our Process</a>
+            <a href="#" data-position={3} onClick={this.moveScroll} className="navigator link white-80 relative">Our Process</a>
           </li>
           <li className="mv3 pa2">
-            <a href="#" data-position={contentPosition[4]} onClick={this.moveScroll} className="navigator link white-80 relative">Inspirations</a>
+            <a href="#" data-position={4} onClick={this.moveScroll} className="navigator link white-80 relative">Inspirations</a>
           </li>
         </ul>
         <style jsx>{`

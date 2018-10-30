@@ -26,21 +26,10 @@ function isShowIframePlayer(state: boolean = false, action: AnyAction) {
   return state
 }
 
-function contentPosition(state: number[] = [], action: AnyAction) {
-  const { type } = action
-
-  if (type == ActionTypes.SET_CONTENT_POSITION) {
-    return action.data
-  }
-
-  return state
-}
-
 const rootReducer = combineReducers<RootState>({
   form: formReducer,
   scrollY,
-  isShowIframePlayer,
-  contentPosition
+  isShowIframePlayer
 })
 
 export default rootReducer
