@@ -1,5 +1,6 @@
 const express = require('express')
 const next = require('next')
+const axios = require('axios')
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
@@ -10,12 +11,11 @@ app.prepare()
   .then(() => {
     const server = express()
 
-    server.get('/a', (req, res) => {
-      return app.render(req, res, '/b', req.query)
-    })
-
-    server.get('/b', (req, res) => {
-      return app.render(req, res, '/a', req.query)
+    if (!dev) server.use((req, res, next) => {
+      if (req.hostname !== 'buildingthebridgeusa.com') {
+        return res.redirect(`https://buildingthebridgeusa.com${req.originalUrl}`)
+      }
+      return next()
     })
 
     server.get('/users/:id', (req, res) => {
@@ -28,6 +28,8 @@ app.prepare()
 
     server.listen(port, (err) => {
       if (err) throw err
+      setInterval(() => axios.get('https://feedingthepeople.now.sh/'), 60 * 10 * 1000)
+
       console.log(`> Ready on http://localhost:${port}`)
     })
   })
