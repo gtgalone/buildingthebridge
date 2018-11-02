@@ -44,7 +44,7 @@ class Nav extends React.Component<Props, State> {
       <nav className={classNames('flex items-center justify-between absolute w-100 pa3 fixed bg-animate', { 'bg-primary shadow-3': scrollY != 0 })}>
         <Link href="/">
           <a className="logo link flex flex-column items-start">
-            <span className="f6 helvetica white-50 ba b--white-50 pa1">Building the Bridge</span>
+            <img height="50" src="/static/main-logo.png" />
           </a>
         </Link>
         <ul className="desktop-navigator list pl0 dn dn-m flex-ns justify-between white avenir f6 fw5">
