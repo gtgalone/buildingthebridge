@@ -64,7 +64,7 @@ class Index extends React.Component<Props, State> {
     if (e.target.dataset.type == 'article') {
       this.setState({ isArticle: true })
     } else {
-      setTimeout(() => this.setState({ isArticle: false }), 500)
+      setTimeout(() => this.setState({ isArticle: false }), 200)
     }
   }
 
