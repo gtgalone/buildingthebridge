@@ -1,7 +1,8 @@
 {
-  "version": 2,
+  "version": 1,
   "alias": [
     "buildingthebridgeusa.com",
     "www.buildingthebridgeusa.com"
-  ]
+  ],
+  "public": true
 }
